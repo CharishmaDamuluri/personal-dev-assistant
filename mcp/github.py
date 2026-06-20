@@ -34,11 +34,18 @@ def read_file(file_path: str) -> str:
     content = response.json()["content"]
     return base64.b64decode(content).decode("utf-8")
 
-def write_file(path: str, content: str, message: str) -> dict:
+# mcp/github.py — updated write_file
+def write_file(path: str, content: str, message: str, branch: str = None) -> dict:
+    import os
+    target_branch = branch or os.getenv("GITHUB_BRANCH")
     url = f"{BASE_URL}/repos/{GITHUB_REPO}/contents/{path}"
 
-    # Check if file exists to get its SHA
-    existing = requests.get(url, headers=HEADERS, params={"ref": GITHUB_BRANCH})
+    # Get SHA if file exists on the target branch
+    existing = requests.get(
+        url,
+        headers=HEADERS,
+        params={"ref": target_branch}
+    )
     sha = existing.json().get("sha") if existing.status_code == 200 else None
 
     import base64
@@ -47,11 +54,11 @@ def write_file(path: str, content: str, message: str) -> dict:
     body = {
         "message": message,
         "content": encoded,
-        "branch": GITHUB_BRANCH,
+        "branch": target_branch,
     }
 
     if sha:
-        body["sha"] = sha  # required when updating an existing file
+        body["sha"] = sha
 
     response = requests.put(url, headers=HEADERS, json=body)
 
@@ -59,7 +66,6 @@ def write_file(path: str, content: str, message: str) -> dict:
         raise Exception(f"Failed to write file: {response.json()}")
 
     return response.json()
-
 def list_directory(dir_path: str) -> list:
     url = f"{BASE_URL}/repos/{GITHUB_REPO}/contents/{dir_path}"
     params = {"ref": GITHUB_BRANCH}
