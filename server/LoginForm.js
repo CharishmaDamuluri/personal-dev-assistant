@@ -1,27 +1,36 @@
 import React, { useState } from 'react';
-import Spinner from './Spinner';
 
-const LoginForm = () => {
-    const [loading, setLoading] = useState(false);
+function LoginForm({ onSubmit }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        // Simulate the loading delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setLoading(false);
-        // Handle the form submission logic here
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    await onSubmit(username, password);
+    setIsLoading(false);
+  };
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <button type="submit">
-                {loading ? <Spinner /> : 'Submit'}
-            </button>
-        </form>
-    );
-};
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Username"
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      />
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Loading...' : 'Login'}
+      </button>
+    </form>
+  );
+}
 
 export default LoginForm;
