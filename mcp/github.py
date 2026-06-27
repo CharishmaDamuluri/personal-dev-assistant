@@ -34,7 +34,6 @@ def read_file(file_path: str) -> str:
     content = response.json()["content"]
     return base64.b64decode(content).decode("utf-8")
 
-# mcp/github.py — updated write_file
 def write_file(path: str, content: str, message: str, branch: str = None) -> dict:
     import os
     target_branch = branch or os.getenv("GITHUB_BRANCH")
@@ -66,6 +65,7 @@ def write_file(path: str, content: str, message: str, branch: str = None) -> dic
         raise Exception(f"Failed to write file: {response.json()}")
 
     return response.json()
+    
 def list_directory(dir_path: str) -> list:
     url = f"{BASE_URL}/repos/{GITHUB_REPO}/contents/{dir_path}"
     params = {"ref": GITHUB_BRANCH}
