@@ -1,25 +1,43 @@
-import React from 'react';
-import { useState } from 'react';
-import { Spinner } from 'components/common/Spinner';
+import React, { useState } from 'react';
 
-function LoginForm() {
+function LoginForm({ onSubmit }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    // simulate login operation
-    setTimeout(() => {
+    try {
+      await onSubmit({ username, password });
+    } catch (error) {
+      // Handle error
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" name="username" placeholder="Username" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <button type="submit" disabled={loading}>Login</button>
-      {loading && <Spinner />}
+      <div>
+        <label>Username:</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <button type="submit" disabled={loading}>
+        {loading ? 'Logging in...' : 'Log In'}
+      </button>
     </form>
   );
 }
