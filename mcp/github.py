@@ -117,3 +117,8 @@ def open_pull_request(title: str, body: str, head_branch: str) -> str:
         raise Exception(f"Failed to open PR: {response.json()}")
 
     return response.json()["html_url"]
+
+def delete_branch(branch_name: str) -> bool:
+    url = f"{BASE_URL}/repos/{GITHUB_REPO}/git/refs/heads/{branch_name}"
+    response = requests.delete(url, headers=HEADERS)
+    return response.status_code == 204
