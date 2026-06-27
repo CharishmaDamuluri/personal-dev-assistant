@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { loginUser } from '../api/auth';
 
-function LoginForm({ onSubmit }) {
-  const [username, setUsername] = useState('');
+function LoginForm() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -9,9 +10,7 @@ function LoginForm({ onSubmit }) {
     event.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ username, password });
-    } catch (error) {
-      // Handle error
+      await loginUser({ email, password });
     } finally {
       setLoading(false);
     }
@@ -20,11 +19,12 @@ function LoginForm({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>Username:</label>
+        <label>Email:</label>
         <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
       </div>
       <div>
@@ -33,10 +33,11 @@ function LoginForm({ onSubmit }) {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
       </div>
       <button type="submit" disabled={loading}>
-        {loading ? 'Logging in...' : 'Log In'}
+        {loading ? 'Loading...' : 'Login'}
       </button>
     </form>
   );
