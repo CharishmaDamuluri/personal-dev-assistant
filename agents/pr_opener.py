@@ -1,17 +1,18 @@
 # agents/pr_opener.py
 import os
 from openai import OpenAI
-from pydantic import BaseModel
 from dotenv import load_dotenv
 from mcp.github import open_pull_request
 from graph.state import AgentState
+from typing import Annotated
+from pydantic import BaseModel, StringConstraints
 
 load_dotenv()
 client = OpenAI()
 
 class PRDescription(BaseModel):
-    title: str
-    body: str
+    title: Annotated[str, StringConstraints(min_length=10, max_length=72)]
+    body: Annotated[str, StringConstraints(min_length=20)]
 
 def open_pr(state: AgentState) -> AgentState:
     print(f"\nPR Opener: generating pull request description")

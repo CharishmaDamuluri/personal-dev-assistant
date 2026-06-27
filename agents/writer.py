@@ -1,7 +1,8 @@
 # agents/writer.py
 import os
 from openai import OpenAI
-from pydantic import BaseModel
+from typing import Annotated
+from pydantic import BaseModel, field_validator, StringConstraints
 from dotenv import load_dotenv
 from mcp.github import read_file, write_file
 from graph.state import AgentState

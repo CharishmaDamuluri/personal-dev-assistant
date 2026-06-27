@@ -1,17 +1,18 @@
 # agents/test_runner.py
 import subprocess
 from graph.state import AgentState
+import os 
 
 def run_tests(state: AgentState) -> AgentState:
     print(f"\nTest Runner: running test suite...")
-
+    TARGET_REPO_PATH = os.getenv("TARGET_REPO_PATH")  # add this to .env
     try:
         result = subprocess.run(
             ["npm", "test", "--", "--passWithNoTests", "--watchAll=false"],
             capture_output=True,
             text=True,
             timeout=120,
-            cwd="."  # runs in your project root
+            cwd=TARGET_REPO_PATH  # runs in the target repository path
         )
 
         test_output = result.stdout + result.stderr
