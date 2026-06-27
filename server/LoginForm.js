@@ -1,21 +1,27 @@
-import React from 'react';
-import { Spinner } from './Spinner';
+import React, { useState } from 'react';
+import Spinner from './Spinner';
 
-function LoginForm() {
-  return (
-    <form>
-      <h2>Login</h2>
-      <label>
-        Username:
-        <input type="text" name="username" />
-      </label>
-      <label>
-        Password:
-        <input type="password" name="password" />
-      </label>
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
+const LoginForm = () => {
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        // Simulate the loading delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        setLoading(false);
+        // Handle the form submission logic here
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="text" placeholder="Username" />
+            <input type="password" placeholder="Password" />
+            <button type="submit">
+                {loading ? <Spinner /> : 'Submit'}
+            </button>
+        </form>
+    );
+};
 
 export default LoginForm;
