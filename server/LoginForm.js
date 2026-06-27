@@ -1,34 +1,45 @@
 import React, { useState } from 'react';
 
-const LoginForm = () => {
+function LoginForm({ onSubmit }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-
-    // Simulate a login process
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    setLoading(false);
-    // proceed with actual login logic
+    try {
+      await onSubmit({ username, password });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="username">Username:</label>
-        <input type="text" id="username" name="username" required />
+        <input
+          id="username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </div>
       <div>
         <label htmlFor="password">Password:</label>
-        <input type="password" id="password" name="password" required />
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </div>
       <button type="submit" disabled={loading}>
         {loading ? 'Loading...' : 'Login'}
       </button>
     </form>
   );
-};
+}
 
 export default LoginForm;
